@@ -19,17 +19,35 @@ function App() {
     fetchTodos();
   }, []);
 
-  const handleAddTodo = () => {
-    if (title.trim()) {
-      setTodos([...todos, { id: todos.length + 1, title, completed: false }]);
-      setTitle("");
-    }
+  const handleAddTodo = async () => {
+    const response = await fetch("http://localhost:3000/todos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ title }),
+    });
+
+    const data = await response.json();
+    const todo = data.todo as Todo;
+    setTodos([...todos, todo]);
   };
 
-  const handleToggleTodo = (id: number) => {
+  const handleToggleTodo = async (id: number) => {
+    const toggled = todos.find((todo) => todo.id === id)?.completed;
+    const response = await fetch(`http://localhost:3000/todos/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ completed: !toggled }),
+    });
+
+    const data = await response.json();
+    const resTodo = data.todo as Todo;
     setTodos(
       todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+        todo.id === id ? resTodo : todo
       )
     );
   };
