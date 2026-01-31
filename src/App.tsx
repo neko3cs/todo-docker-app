@@ -14,7 +14,7 @@ function App() {
     const fetchTodos = async () => {
       const response = await fetch("http://localhost:3000/todos");
       const data = await response.json();
-      setTodos(data.todos);
+      setTodos(data.todos as Todo[]);
     };
     fetchTodos();
   }, []);
